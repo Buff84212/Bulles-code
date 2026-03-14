@@ -1,212 +1,400 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Code PIN</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code PIN Glass</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-<style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: white;
+    }
 
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;
-    background:linear-gradient(180deg,#0f172a,#020617);
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    color:white;
-}
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(59,130,246,0.35), transparent 30%),
+        radial-gradient(circle at 80% 30%, rgba(168,85,247,0.30), transparent 28%),
+        radial-gradient(circle at 30% 80%, rgba(34,197,94,0.22), transparent 24%),
+        radial-gradient(circle at 75% 75%, rgba(236,72,153,0.22), transparent 24%),
+        linear-gradient(160deg, #020617, #0f172a 45%, #111827);
+      background-size: 140% 140%;
+      animation: bgShift 14s ease-in-out infinite;
+      position: relative;
+    }
 
-.phone{
-    width:320px;
-    text-align:center;
-}
+    body::before,
+    body::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      pointer-events: none;
+      filter: blur(60px);
+      opacity: 0.9;
+    }
 
-h2{
-    font-weight:500;
-    margin-bottom:30px;
-}
+    body::before {
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.10) 0%, transparent 20%),
+        radial-gradient(circle, rgba(96,165,250,0.10) 0%, transparent 18%),
+        radial-gradient(circle, rgba(192,132,252,0.10) 0%, transparent 18%);
+      background-size: 18% 18%, 24% 24%, 20% 20%;
+      background-position: 10% 20%, 70% 40%, 35% 75%;
+      animation: floatLights 18s linear infinite;
+    }
 
-.pin{
-    display:flex;
-    justify-content:center;
-    gap:14px;
-    margin-bottom:20px;
-}
+    body::after {
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), transparent 10%),
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,0.05), transparent 12%),
+        radial-gradient(circle at 50% 85%, rgba(255,255,255,0.04), transparent 8%);
+      animation: drift 12s ease-in-out infinite alternate;
+    }
 
-.bubble{
-    width:18px;
-    height:18px;
-    border-radius:50%;
-    border:2px solid white;
-}
+    @keyframes bgShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-.filled{
-    background:white;
-}
+    @keyframes floatLights {
+      0%   { transform: translate(0, 0) scale(1); }
+      50%  { transform: translate(3%, -2%) scale(1.05); }
+      100% { transform: translate(-2%, 3%) scale(0.98); }
+    }
 
-.error .bubble{
-    border-color:#ff4d4d;
-}
+    @keyframes drift {
+      from { transform: translateY(-10px) translateX(-8px); }
+      to   { transform: translateY(12px) translateX(10px); }
+    }
 
-.error .filled{
-    background:#ff4d4d;
-}
+    .phone {
+      width: 340px;
+      max-width: 92vw;
+      padding: 26px 22px 24px;
+      border-radius: 34px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow:
+        0 20px 60px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        inset 0 -1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
 
-.message{
-    height:20px;
-    margin-bottom:20px;
-    color:#ff4d4d;
-    font-size:14px;
-}
+    .top-shine {
+      position: absolute;
+      top: 0;
+      left: 12%;
+      width: 76%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+      opacity: 0.45;
+    }
 
-.keypad{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:18px;
-    justify-items:center;
-}
+    h2 {
+      margin: 6px 0 10px;
+      font-size: 1.45rem;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    }
 
-.key{
-    width:70px;
-    height:70px;
-    border-radius:50%;
-    background:rgba(255,255,255,0.1);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:26px;
-    cursor:pointer;
-    backdrop-filter:blur(10px);
-    transition:0.15s;
-}
+    .subtitle {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.72);
+      margin-bottom: 24px;
+      min-height: 20px;
+    }
 
-.key:hover{
-    background:rgba(255,255,255,0.25);
-}
+    .pin {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      transition: transform 0.25s ease;
+    }
 
-.key:active{
-    transform:scale(0.9);
-}
+    .bubble {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      position: relative;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.26);
+      box-shadow:
+        inset 0 1px 1px rgba(255,255,255,0.18),
+        inset 0 -2px 6px rgba(255,255,255,0.04),
+        0 6px 20px rgba(0,0,0,0.18);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
 
-.empty{
-    visibility:hidden;
-}
+    .bubble::before {
+      content: "";
+      position: absolute;
+      top: 2px;
+      left: 3px;
+      width: 55%;
+      height: 35%;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      filter: blur(1px);
+    }
 
-</style>
+    .bubble.filled {
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(255,255,255,0.55));
+      border-color: rgba(255,255,255,0.8);
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.45),
+        0 0 18px rgba(255,255,255,0.15),
+        0 8px 24px rgba(0,0,0,0.22);
+      transform: scale(1.03);
+    }
+
+    .pin.error {
+      animation: shake 0.45s ease;
+    }
+
+    .pin.error .bubble {
+      border-color: rgba(255, 90, 90, 0.95);
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.12),
+        0 0 18px rgba(255, 90, 90, 0.18),
+        0 8px 24px rgba(0,0,0,0.22);
+    }
+
+    .pin.error .bubble.filled {
+      background: radial-gradient(circle at 30% 30%, rgba(255,170,170,0.95), rgba(255,77,77,0.9));
+      border-color: rgba(255,120,120,1);
+    }
+
+    .pin.success .bubble.filled {
+      background: radial-gradient(circle at 30% 30%, rgba(187,247,208,0.98), rgba(34,197,94,0.88));
+      border-color: rgba(134,239,172,1);
+      box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.35),
+        0 0 18px rgba(34,197,94,0.22),
+        0 8px 24px rgba(0,0,0,0.22);
+    }
+
+    .message {
+      min-height: 24px;
+      margin-bottom: 18px;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.88);
+      letter-spacing: 0.2px;
+      transition: all 0.2s ease;
+    }
+
+    .message.error {
+      color: #ff8a8a;
+    }
+
+    .message.success {
+      color: #9ff0b6;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      justify-items: center;
+    }
+
+    .key {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 1.7rem;
+      font-weight: 400;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.14),
+        inset 0 -4px 10px rgba(255,255,255,0.03),
+        0 10px 28px rgba(0,0,0,0.24);
+      transition: transform 0.12s ease, background 0.12s ease, box-shadow 0.12s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .key::before {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 14px;
+      width: 44%;
+      height: 24%;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.22);
+      filter: blur(1px);
+    }
+
+    .key:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
+    .key:active {
+      transform: scale(0.93);
+      background: rgba(255,255,255,0.18);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        0 6px 18px rgba(0,0,0,0.22);
+    }
+
+    .key.empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(8px); }
+      60% { transform: translateX(-6px); }
+      80% { transform: translateX(6px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
 </head>
-
 <body>
+  <div class="phone">
+    <div class="top-shine"></div>
+    <h2>Entrer le code</h2>
+    <div class="subtitle">Saisis ton code d’accès</div>
 
-<div class="phone">
+    <div class="pin" id="pin">
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+    </div>
 
-<h2>Entrer le code</h2>
+    <div class="message" id="message"></div>
 
-<div class="pin" id="pin">
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-<div class="bubble"></div>
-</div>
+    <div class="keypad">
+      <div class="key" onclick="press(1)">1</div>
+      <div class="key" onclick="press(2)">2</div>
+      <div class="key" onclick="press(3)">3</div>
 
-<div class="message" id="message"></div>
+      <div class="key" onclick="press(4)">4</div>
+      <div class="key" onclick="press(5)">5</div>
+      <div class="key" onclick="press(6)">6</div>
 
-<div class="keypad">
+      <div class="key" onclick="press(7)">7</div>
+      <div class="key" onclick="press(8)">8</div>
+      <div class="key" onclick="press(9)">9</div>
 
-<div class="key" onclick="press(1)">1</div>
-<div class="key" onclick="press(2)">2</div>
-<div class="key" onclick="press(3)">3</div>
+      <div class="key empty">.</div>
+      <div class="key" onclick="press(0)">0</div>
+      <div class="key" onclick="del()">⌫</div>
+    </div>
 
-<div class="key" onclick="press(4)">4</div>
-<div class="key" onclick="press(5)">5</div>
-<div class="key" onclick="press(6)">6</div>
+    <div class="footer">Interface glass dynamique</div>
+  </div>
 
-<div class="key" onclick="press(7)">7</div>
-<div class="key" onclick="press(8)">8</div>
-<div class="key" onclick="press(9)">9</div>
+  <script>
+    const correctCode = "84212";
+    let code = "";
 
-<div class="key empty">.</div>
-<div class="key" onclick="press(0)">0</div>
-<div class="key" onclick="del()">⌫</div>
+    const pin = document.getElementById("pin");
+    const bubbles = document.querySelectorAll(".bubble");
+    const message = document.getElementById("message");
 
-</div>
+    function press(num) {
+      if (code.length >= correctCode.length) return;
 
-</div>
+      if (pin.classList.contains("error") || pin.classList.contains("success")) return;
 
-<script>
+      code += String(num);
+      updateBubbles();
 
-const correctCode = "84212"
-let code = ""
-
-function press(num){
-
-    if(code.length >= correctCode.length) return
-
-    code += num
-    update()
-
-    if(code.length === correctCode.length){
-        setTimeout(checkCode,200)
+      if (code.length === correctCode.length) {
+        setTimeout(checkCode, 180);
+      }
     }
 
-}
-
-function del(){
-    code = code.slice(0,-1)
-    update()
-}
-
-function update(){
-
-    const bubbles = document.querySelectorAll(".bubble")
-
-    bubbles.forEach((b,i)=>{
-        if(i < code.length){
-            b.classList.add("filled")
-        }else{
-            b.classList.remove("filled")
-        }
-    })
-
-}
-
-function checkCode(){
-
-    const pin = document.getElementById("pin")
-    const message = document.getElementById("message")
-
-    if(code === correctCode){
-
-        message.style.color="#4ade80"
-        message.textContent="Code correct ✅"
-
-    }else{
-
-        pin.classList.add("error")
-        message.textContent="Code incorrect"
-
-        setTimeout(()=>{
-            reset()
-            pin.classList.remove("error")
-        },800)
-
+    function del() {
+      if (pin.classList.contains("success")) return;
+      code = code.slice(0, -1);
+      clearState();
+      updateBubbles();
     }
 
-}
+    function updateBubbles() {
+      bubbles.forEach((bubble, index) => {
+        bubble.classList.toggle("filled", index < code.length);
+      });
+    }
 
-function reset(){
+    function checkCode() {
+      if (code === correctCode) {
+        pin.classList.remove("error");
+        pin.classList.add("success");
+        message.textContent = "Code correct ✅";
+        message.className = "message success";
+      } else {
+        pin.classList.remove("success");
+        pin.classList.add("error");
+        message.textContent = "Code incorrect";
+        message.className = "message error";
 
-    code = ""
-    document.getElementById("message").textContent=""
+        setTimeout(() => {
+          resetCode();
+        }, 900);
+      }
+    }
 
-    const bubbles = document.querySelectorAll(".bubble")
-    bubbles.forEach(b=>b.classList.remove("filled"))
+    function clearState() {
+      pin.classList.remove("error", "success");
+      message.textContent = "";
+      message.className = "message";
+    }
 
-}
+    function resetCode() {
+      code = "";
+      clearState();
+      updateBubbles();
+    }
 
-</script>
-
+    document.addEventListener("keydown", (e) => {
+      if (/^[0-9]$/.test(e.key)) {
+        press(e.key);
+      } else if (e.key === "Backspace") {
+        del();
+      }
+    });
+  </script>
 </body>
 </html>
