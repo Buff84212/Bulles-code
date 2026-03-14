@@ -1,184 +1,212 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code en bulles</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code PIN</title>
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #eef2ff, #dbeafe);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+<style>
 
-    .app {
-      background: white;
-      padding: 32px;
-      border-radius: 24px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
-      width: min(90vw, 420px);
-      text-align: center;
-    }
+body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;
+    background:linear-gradient(180deg,#0f172a,#020617);
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+}
 
-    h1 {
-      margin-top: 0;
-      font-size: 1.8rem;
-      color: #1e3a8a;
-    }
+.phone{
+    width:320px;
+    text-align:center;
+}
 
-    p {
-      color: #475569;
-      margin-bottom: 20px;
-    }
+h2{
+    font-weight:500;
+    margin-bottom:30px;
+}
 
-    input {
-      width: 100%;
-      padding: 14px 16px;
-      font-size: 1.2rem;
-      border: 2px solid #cbd5e1;
-      border-radius: 14px;
-      outline: none;
-      text-align: center;
-      letter-spacing: 4px;
-    }
+.pin{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    margin-bottom:20px;
+}
 
-    input:focus {
-      border-color: #3b82f6;
-    }
+.bubble{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    border:2px solid white;
+}
 
-    .bubbles {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-      min-height: 60px;
-    }
+.filled{
+    background:white;
+}
 
-    .bubble {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: #3b82f6;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
-      font-weight: bold;
-      box-shadow: 0 8px 18px rgba(59, 130, 246, 0.35);
-      animation: pop 0.2s ease;
-    }
+.error .bubble{
+    border-color:#ff4d4d;
+}
 
-    .placeholder {
-      color: #94a3b8;
-      font-size: 0.95rem;
-      margin-top: 8px;
-    }
+.error .filled{
+    background:#ff4d4d;
+}
 
-    @keyframes pop {
-      0% {
-        transform: scale(0.6);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
+.message{
+    height:20px;
+    margin-bottom:20px;
+    color:#ff4d4d;
+    font-size:14px;
+}
 
-    .actions {
-      margin-top: 20px;
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-    }
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    justify-items:center;
+}
 
-    button {
-      border: none;
-      padding: 12px 16px;
-      border-radius: 12px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+.key{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:26px;
+    cursor:pointer;
+    backdrop-filter:blur(10px);
+    transition:0.15s;
+}
 
-    .primary {
-      background: #2563eb;
-      color: white;
-    }
+.key:hover{
+    background:rgba(255,255,255,0.25);
+}
 
-    .secondary {
-      background: #e2e8f0;
-      color: #1e293b;
-    }
-  </style>
+.key:active{
+    transform:scale(0.9);
+}
+
+.empty{
+    visibility:hidden;
+}
+
+</style>
 </head>
+
 <body>
-  <div class="app">
-    <h1>Code en bulles</h1>
-    <p>Entre un code numérique ci-dessous</p>
 
-    <input
-      id="codeInput"
-      type="text"
-      inputmode="numeric"
-      maxlength="8"
-      placeholder="Ex: 1234"
-    />
+<div class="phone">
 
-    <div id="bubbles" class="bubbles"></div>
-    <div class="placeholder">Chaque chiffre apparaît dans une bulle</div>
+<h2>Entrer le code</h2>
 
-    <div class="actions">
-      <button class="primary" onclick="validerCode()">Valider</button>
-      <button class="secondary" onclick="viderCode()">Effacer</button>
-    </div>
-  </div>
+<div class="pin" id="pin">
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+<div class="bubble"></div>
+</div>
 
-  <script>
-    const input = document.getElementById("codeInput");
-    const bubbles = document.getElementById("bubbles");
+<div class="message" id="message"></div>
 
-    function renderBubbles(value) {
-      const chiffres = value.replace(/\D/g, "");
-      input.value = chiffres;
-      bubbles.innerHTML = "";
+<div class="keypad">
 
-      for (const chiffre of chiffres) {
-        const bubble = document.createElement("div");
-        bubble.className = "bubble";
-        bubble.textContent = chiffre;
-        bubbles.appendChild(bubble);
-      }
+<div class="key" onclick="press(1)">1</div>
+<div class="key" onclick="press(2)">2</div>
+<div class="key" onclick="press(3)">3</div>
+
+<div class="key" onclick="press(4)">4</div>
+<div class="key" onclick="press(5)">5</div>
+<div class="key" onclick="press(6)">6</div>
+
+<div class="key" onclick="press(7)">7</div>
+<div class="key" onclick="press(8)">8</div>
+<div class="key" onclick="press(9)">9</div>
+
+<div class="key empty">.</div>
+<div class="key" onclick="press(0)">0</div>
+<div class="key" onclick="del()">⌫</div>
+
+</div>
+
+</div>
+
+<script>
+
+const correctCode = "84212"
+let code = ""
+
+function press(num){
+
+    if(code.length >= correctCode.length) return
+
+    code += num
+    update()
+
+    if(code.length === correctCode.length){
+        setTimeout(checkCode,200)
     }
 
-    function validerCode() {
-      const code = input.value;
-      if (!code) {
-        alert("Veuillez entrer un code.");
-        return;
-      }
-      alert("Code saisi : " + code);
+}
+
+function del(){
+    code = code.slice(0,-1)
+    update()
+}
+
+function update(){
+
+    const bubbles = document.querySelectorAll(".bubble")
+
+    bubbles.forEach((b,i)=>{
+        if(i < code.length){
+            b.classList.add("filled")
+        }else{
+            b.classList.remove("filled")
+        }
+    })
+
+}
+
+function checkCode(){
+
+    const pin = document.getElementById("pin")
+    const message = document.getElementById("message")
+
+    if(code === correctCode){
+
+        message.style.color="#4ade80"
+        message.textContent="Code correct ✅"
+
+    }else{
+
+        pin.classList.add("error")
+        message.textContent="Code incorrect"
+
+        setTimeout(()=>{
+            reset()
+            pin.classList.remove("error")
+        },800)
+
     }
 
-    function viderCode() {
-      input.value = "";
-      bubbles.innerHTML = "";
-      input.focus();
-    }
+}
 
-    input.addEventListener("input", (e) => {
-      renderBubbles(e.target.value);
-    });
-  </script>
+function reset(){
+
+    code = ""
+    document.getElementById("message").textContent=""
+
+    const bubbles = document.querySelectorAll(".bubble")
+    bubbles.forEach(b=>b.classList.remove("filled"))
+
+}
+
+</script>
+
 </body>
 </html>
-
